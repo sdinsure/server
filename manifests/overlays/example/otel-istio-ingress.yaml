@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: gateway
+  namespace: monitoring
+spec:
+  selector:
+    app: istio-gateway
+    istio: gateway
+  servers:
+  - hosts:
+    - otel.example.com # This should match a DNS name in the Certificate
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+  - hosts:
+    - otel.example.com # This should match a DNS name in the Certificate
+    port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: otel-ingress-cert # This should match the Certificate secretName

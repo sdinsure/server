@@ -1,0 +1,49 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: otel-collector
+  namespace: monitoring
+  annotations:
+    "helm.sh/hook": "pre-install"
+spec:
+  mode: statefulset
+  config: |
+    connectors:
+      spanmetrics: null
+    exporters:
+      debug: {}
+      logging: {}
+      otlp:
+        endpoint: 'jaeger-all-in-one-collector:4317'
+        tls:
+          insecure: true
+      otlphttp/prometheus:
+        endpoint: http://kube-prometheus-stack-prometheus.monitoring:9090/api/v1/otlp
+        tls:
+          insecure: true
+    processors:
+      batch:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            cors:
+              allowed_origins:
+              - http://*
+              - https://*
+            endpoint: 0.0.0.0:4318
+    service:
+      telemetry:
+        logs:
+          level: "debug"
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlp, debug]
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlphttp/prometheus, debug]

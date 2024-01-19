@@ -1,0 +1,14 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: jaeger-operator-for-ns-monitoring
+  # place $namespace other than monitoring enables jaegertracing-jaeger-operator to trace $namespace
+  namespace: monitoring
+subjects:
+- kind: ServiceAccount
+  name: jaegertracing-jaeger-operator
+  namespace: monitoring
+roleRef:
+  kind: Role
+  name: jaegertracing-jaeger-operator
+  apiGroup: rbac.authorization.k8s.io

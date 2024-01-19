@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vs
+  namespace: monitoring
+spec:
+  gateways:
+  - monitoring/gateway
+  hosts:
+  - "*"
+  tcp:
+  - match:
+    - port: 4317
+    route:
+    - destination:
+        host: otel-collector-collector
+        port:
+          number: 4317
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: otel-collector-collector
+        port:
+          number: 4318
