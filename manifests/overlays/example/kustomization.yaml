@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- jaeger-allinone.yaml
+- jeager-operator-role-binding.yaml
+- otel-certificate.yaml
+- otel-collector.yaml
+- otel-istio-ingress.yaml
+- otel-istio-vs.yaml
+- ../../base/istio
+- ../../base/cert-manager/v1.13.3
+- ../../base/monitoring/namespace.yaml
+- ../../base/monitoring/kube-prometheus-stack
+- ../../base/monitoring/jaeger-operator
+- ../../base/monitoring/open-telemetry-operator
